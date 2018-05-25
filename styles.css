@@ -1,0 +1,736 @@
+@keyframes file-upload-loading{
+	from {
+		background:#2370ed;
+		transform: scale(0,0);
+	}
+	to {
+		background:#42d9f4;
+		transform: scale(1,1);
+	}
+}
+@-webkit-keyframes file-upload-loading{
+	from {
+		background:#2370ed;
+		transform: scale(0,0);
+	}
+	to {
+		background:#42d9f4;
+		transform: scale(1,1);
+	}
+}
+/*********************************************************************************************/
+* {
+	box-sizing: border-box;	
+}
+button{
+	outline:none !important;
+}
+html{
+	height: 100%;
+}
+body{
+	width: 100%;
+	min-height: 100%;
+	padding: 0;
+	margin: 0;
+}
+.row{
+	margin: 0;
+}
+.row:before, .row:after{
+	content: '';
+	display: table;
+	clear: both;
+}
+.col-4{
+	float: left;
+	width: 25%;
+	padding: 0 5px;
+	margin: 0;
+}
+.modal-uploader{
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 100;
+	/*display: none;*/
+	width: 100%;
+	height: 100%;
+}
+.modal-uploader.opened{
+	display: block;
+}
+.modal-uploader .modal-fade{
+	position:absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	background: #000;
+	opacity: 0.75;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body{ 
+	position:absolute;	
+	top: 2.5%;
+	left: 15%;
+	z-index: 1;
+	width: 70%;
+	padding: 0 0 50px;
+	min-height: 72.5%;
+	border: 1px solid #fff;
+	background: #aaa;
+	box-shadow: 0 0 10px rgba(255,255,255,0.5);
+	transform: translateY(-100%);
+	opacity: 0;
+	transition: all 0.25s linear 0s;
+}
+/*********************************************************************************************/
+.modal-uploader.opened .modal-body{
+	transform: translateY(0);	
+	opacity: 1;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .file-area{
+	position:relative;
+	display:block;
+	width: 100%;
+	height: auto;
+	padding: 20px 60px;
+}
+.modal-uploader .modal-body .file-area.hover{
+	background:rgba(255,255,255,0.25);
+}
+.modal-uploader .modal-body .file-area > .btn{
+	position: absolute;
+	top: 20px;
+	bottom: 20px;
+	display: none;
+	width: 30px;
+	height: auto;
+	border: none;
+	background: transparent;
+	cursor: pointer;	
+}
+.modal-uploader .modal-body .file-area > .btn:before{
+	content:'';
+	position:absolute;
+	top:50%;
+	left:50%;
+	display:block;
+	border-top:30px solid transparent;
+	border-right:10px solid #fff;
+	border-bottom:30px solid transparent;
+	border-left:none;
+	transform: translate(-50%,-50%);
+}
+.modal-uploader .modal-body .file-area > .btn.btn-prev{	
+	left: 20px;	
+}
+.modal-uploader .modal-body .file-area > .btn.btn-next{	
+	right: 20px;	
+}
+.modal-uploader .modal-body .file-area > .btn.btn-next:before{
+	border-right:none;
+	border-left:10px solid #fff;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .file-area .pre-upload{
+	width:100%;
+	height:150px;
+	padding:20px 0;	
+}
+.modal-uploader .modal-body .file-area .pre-upload h3{
+	margin: 0 0 10px;
+	text-align: center;
+	color: #fff;
+	font-size: 18px;
+	font-weight: 400;	
+}
+.modal-uploader .modal-body .file-area .pre-upload .loader{
+	width: 220px;
+	height: 20px;
+	margin: 0 auto 30px;
+}
+.modal-uploader .modal-body .file-area .pre-upload .loader .circle{
+	display: block;
+	float: left;
+	width: 20px;
+	height: 20px;
+	margin: 0 2px 0 0;
+	background: #42d9f4;
+	border-radius: 50%;
+	transform:scale(0,0);
+}
+.modal-uploader .modal-body .file-area .pre-upload .loader .circle:last-child{
+	margin:0;
+}
+.modal-uploader .modal-body .file-area .pre-upload .loader .circle.animated{
+	animation: file-upload-loading 1s infinite alternate;
+	-webkit-animation: file-upload-loading 1s infinite alternate;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .file-area .image-files{
+	display:none;
+	width:100%;
+	height:150px;
+	padding:25px 0;
+	overflow: hidden;
+    /*overflow-x: auto;*/
+    white-space: nowrap;
+}
+.modal-uploader .modal-body .file-area .image-files .thumb{
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	width: auto;
+	height: 100px;
+	margin: 0 10px;
+	overflow: hidden;
+	transform: scale(1,1);
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .file-area .image-files .thumb:hover{
+	transform: scale(1.1,1.1);
+}
+.modal-uploader .modal-body .file-area .image-files .thumb .orig{
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 2;
+	display: block;
+	width: 100%;
+	height: 100%;
+
+	background-position: top left;
+	background-repeat: no-repeat;
+	background-size: auto 100%;
+
+	-webkit-filter: grayscale(100%);
+	-moz-filter: grayscale(100%);
+	-ms-filter: grayscale(100%);
+	-o-filter: grayscale(100%);
+	filter: grayscale(100%);
+	filter: gray; /* IE 6-9 */
+}
+.modal-uploader .modal-body .file-area .image-files .thumb .hovered{
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3;
+	display: block;
+	width: 0%;
+	opacity: 1;
+	height: 100%;
+	transition:width 0.15s linear 0s;
+
+	background-position: top left;
+	background-repeat: no-repeat;
+	background-size: auto 100%;
+}
+.modal-uploader .modal-body .file-area .image-files .thumb.uploading .hovered{
+	width:90%;
+}
+.modal-uploader .modal-body .file-area .image-files .thumb img{
+	position: relative;
+	z-index: 1;
+	width: auto;
+	height: 100%;
+	visibility: hidden;
+}
+.modal-uploader .modal-body .file-area .image-files .thumb:hover .hovered{
+	width:100%;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .file-area .video-files{
+	display:none;
+	width:100%;
+	height:150px;
+	padding:25px 0;
+	overflow: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.modal-uploader .modal-body .file-area .video-files .thumb{
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	width: 100px;
+	height: 100px;
+	margin: 0 10px;
+	border: 4px solid gray;
+	border-radius: 10px;
+	overflow: hidden;
+	transform: scale(1,1);
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .file-area .video-files .thumb:hover{
+	transform: scale(1.1,1.1);
+	border: 4px solid #fff;
+}
+.modal-uploader .modal-body .file-area .video-files .thumb .orig{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 2;
+	display: block;
+	width: 80px;
+	height: 80px;
+	margin: -40px 0 0 -40px;
+	opacity: 1;
+
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: auto 100%;
+
+	-webkit-filter: brightness(50%);
+	-moz-filter: brightness(50%);
+	-ms-filter: brightness(50%);
+	-o-filter: brightness(50%);
+	filter: brightness(50%);
+
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .file-area .video-files .thumb:hover .orig{
+	opacity: 0;
+}
+.modal-uploader .modal-body .file-area .video-files .thumb .hovered{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 2;
+	display: block;
+	width: 80px;
+	height: 80px;
+	margin: -40px 0 0 -40px;
+	opacity: 0;
+
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: auto 100%;
+
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .file-area .video-files .thumb:hover .hovered{
+	opacity: 1;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .file-area .audio-files{
+	display:none;
+	width:100%;
+	height:150px;
+	padding:25px 0;
+	overflow: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.modal-uploader .modal-body .file-area .audio-files .thumb{
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	width: 100px;
+	height: 100px;
+	margin: 0 10px;
+	border: 4px solid gray;
+	border-radius: 10px;
+	overflow: hidden;
+	transform: scale(1,1);
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .file-area .audio-files .thumb:hover{
+	transform: scale(1.1,1.1);
+	border: 4px solid #fff;
+}
+.modal-uploader .modal-body .file-area .audio-files .thumb .orig{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 2;
+	display: block;
+	width: 80px;
+	height: 80px;
+	margin: -40px 0 0 -40px;
+	opacity: 1;
+
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: auto 100%;
+
+	-webkit-filter: brightness(50%);
+	-moz-filter: brightness(50%);
+	-ms-filter: brightness(50%);
+	-o-filter: brightness(50%);
+	filter: brightness(50%);
+
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .file-area .audio-files .thumb:hover .orig{
+	opacity: 0;
+}
+.modal-uploader .modal-body .file-area .audio-files .thumb .hovered{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 2;
+	display: block;
+	width: 80px;
+	height: 80px;
+	margin: -40px 0 0 -40px;
+	opacity: 0;
+
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: auto 100%;
+
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .file-area .audio-files .thumb:hover .hovered{
+	opacity: 1;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .buttons-set{
+	height: 80px;
+	margin: 0 0 20px;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .buttons-set .complex-button{
+	position: relative;
+	z-index: 3;
+	width: 100px;
+	height: 80px;
+	margin: 0 auto;
+	cursor: pointer;
+}
+.modal-uploader .modal-body .buttons-set .complex-button.inactive{
+	opacity:0.5;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .buttons-set .complex-button .text-container{
+	position: absolute;
+	top:0;
+	left:50%;
+	width: 100px;
+	height: 0;
+	overflow: hidden;
+	margin:0 0 0 -50px;
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .buttons-set .complex-button .text-container h4{
+	margin:0 0 5px;
+	font-size: 11px;
+	color: #9bc3fa;	
+	text-align: justify;
+	text-shadow: 0 0 5px rgba(0,0,0,0.75);
+}
+.modal-uploader .modal-body .buttons-set .complex-button .text-container .comment{
+	margin: 0;
+	font-size: 9px;
+	color: #fff;
+	text-align: justify;
+	text-shadow: 0 0 5px rgba(0,0,0,0.75);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.upload-active .text-container .comment{
+	display:none;
+}
+.modal-uploader .modal-body .buttons-set .complex-button .text-container .on-upload{
+	display:none;
+	width: 100px;
+	height: auto;
+}
+.modal-uploader .modal-body .buttons-set .complex-button .text-container .on-upload .files-counter{
+	position: relative;
+	width: 50px;
+	height: 30px;
+	margin:0 auto 5px;
+}
+.modal-uploader .modal-body .buttons-set .complex-button .text-container .on-upload .files-counter span{
+	position: absolute;
+	top: 0;
+	display: block;
+	width: 30px;
+	height: 30px;
+	padding-top: 6px;
+	border-radius: 50%;
+	color: #fff;
+	text-align: center;
+	line-height: 1;	
+}
+.modal-uploader .modal-body .buttons-set .complex-button .text-container .on-upload .files-counter span.included-counter{
+	left: 0;
+	z-index: 3;
+	background: #99de99;
+}
+.modal-uploader .modal-body .buttons-set .complex-button .text-container .on-upload .files-counter span.uploaded-counter{
+	right: 0;
+	z-index: 2;
+	background: #88ddf3;
+}
+.modal-uploader .modal-body .buttons-set .complex-button .text-container .on-upload p{
+	margin: 0;
+	text-align: center;
+	color: #fff;
+	text-shadow: 0 0 4px rgba(0,0,0,0.75);
+}
+.modal-uploader .modal-body .buttons-set .complex-button .text-container .on-upload p.small{
+	font-size:9px;
+}
+.modal-uploader .modal-body .buttons-set .complex-button .text-container .on-upload p.medium{
+	font-size:12px;
+	font-weight: 600;
+}
+.modal-uploader .modal-body .buttons-set .complex-button.upload-active .text-container .on-upload{
+	display:block;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .buttons-set .complex-button .button-container{
+	position: absolute;
+	top:0;
+	left:50%;
+	width: 80px;
+	height: 80px;
+	margin:0 0 0 -40px;
+	transition: all 0.25s linear 0s;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .buttons-set .complex-button .button-container .btn{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 1;
+	width: 60px;
+	height: 60px;
+	margin: -30px 0 0 -30px;
+	border-radius: 50%;
+	border: none;
+	background: transparent;
+	transform: scale(1,1);
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .buttons-set .complex-button.pics .button-container .btn{
+	background: url('img/pic3.png') center center no-repeat;
+	background-size: 100% auto;
+}
+.modal-uploader .modal-body .buttons-set .complex-button.video .button-container .btn{
+	background: url('img/video3.png') center center no-repeat;
+	background-size: 100% auto;
+}
+.modal-uploader .modal-body .buttons-set .complex-button.audio .button-container .btn{
+	background: url('img/audio3.png') center center no-repeat;
+	background-size: 100% auto;
+}
+.modal-uploader .modal-body .buttons-set .complex-button.files .button-container .btn{
+	background: url('img/file3.png') center center no-repeat;
+	background-size: 100% auto;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .buttons-set .complex-button .button-container .outer-arc{
+	position:absolute;
+	top: 0;
+	left: 0;
+	z-index: 2;
+	display: block;
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	border-top: 3px solid #fff;
+	border-right: 3px solid transparent;
+	border-left: 3px solid #fff;
+	border-bottom: 3px solid transparent;
+	transform: rotate(0) scale(1,1);
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .buttons-set .complex-button.pics .button-container .outer-arc{
+	transform: rotate(25deg) scale(1,1);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.video .button-container .outer-arc{
+	transform: rotate(-30deg) scale(1,1);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.audio .button-container .outer-arc{
+	transform: rotate(-80deg) scale(1,1);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.files .button-container .outer-arc{
+	transform: rotate(20deg) scale(1,1);
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .buttons-set .complex-button .button-container .inner-arc{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 3;
+	display: block;
+	width: 70px;
+	height: 70px;
+	margin: -35px 0 0 -35px;
+	border-radius: 50%;
+	border-top: 2px solid transparent;
+	border-right: 2px solid #fff;
+	border-bottom: 2px solid #fff;
+	border-left: 2px solid transparent;
+	/*transform: rotate(0) scale(1,1);*/
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .buttons-set .complex-button.pics .button-container .inner-arc{
+	transform: rotate(75deg) scale(1,1);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.video .button-container .inner-arc{
+	transform: rotate(45deg) scale(1,1);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.audio .button-container .inner-arc{
+	transform: rotate(-145deg) scale(1,1);
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .buttons-set .complex-button .button-container .files-counter{
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	z-index: 4;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: #99de99;
+	text-align: center;
+	color: #fff;
+	line-height: 1;
+	font-size: 10px;
+	padding: 5px 0 0;
+	transform: scale(0,0);
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .buttons-set .complex-button.upload-active .button-container .files-counter{
+	transform: scale(1,1);
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .buttons-set .complex-button:not(.inactive):hover .text-container{
+	height: 80px;
+}
+.modal-uploader .modal-body .buttons-set .complex-button:not(.inactive):hover .button-container{
+	transform: translateY(80px);
+}
+.modal-uploader .modal-body .buttons-set .complex-button:not(.inactive):hover .button-container .btn {
+	transform: scale(1.1,1.1);
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .buttons-set .complex-button:not(.inactive):hover .button-container .outer-arc{
+	transform: rotate(65deg) scale(1.1,1.1);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.pics:not(.inactive):hover .button-container .outer-arc{
+	transform: rotate(65deg) scale(1.1,1.1);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.video:not(.inactive):hover .button-container .outer-arc{
+	transform: rotate(10deg) scale(1.1,1.1);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.audio:not(.inactive):hover .button-container .outer-arc{
+	transform: rotate(-120deg) scale(1.1,1.1);
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .buttons-set .complex-button:not(.inactive):hover .button-container .inner-arc{
+	transform: rotate(-55deg) scale(1.1,1.1);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.pics:not(.inactive):hover .button-container .inner-arc{
+	transform: rotate(35deg) scale(1.1,1.1);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.video:not(.inactive):hover .button-container .inner-arc{
+	transform: rotate(5deg) scale(1.1,1.1);
+}
+.modal-uploader .modal-body .buttons-set .complex-button.audio:not(.inactive):hover .button-container .inner-arc{
+	transform: rotate(-105deg) scale(1.1,1.1);
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .full-upload-button-box{
+	text-align: center;
+	margin: 0 0 20px;
+}
+.modal-uploader .modal-body .full-upload-button-box .full-upload-button{
+	padding: 10px 25px;
+	border-radius: 5px;
+	border: none;
+	background: #76e554;
+	color: #fff;
+	font-size: 14px;
+	cursor: pointer;
+}
+.modal-uploader .modal-body .full-upload-button-box .loading-progress{
+	position:relative;
+	display:none;
+	width:50%;
+	height:35px;
+	margin:0 auto;
+	border-radius: 5px;
+	border-radius: 5px;
+	border: none;
+	background: #c3c3c3;
+}
+.modal-uploader .modal-body .full-upload-button-box .loading-progress .loading-bar{
+	position:relative;
+	z-index: 1;	
+	display:block;
+	width: 0;
+	height:100%;
+	background: #83c9cd;
+	transition: all 0.25s linear 0s;
+}
+.modal-uploader .modal-body .full-upload-button-box .loading-progress .loading-percent{
+	position:absolute;
+	z-index: 2;	
+	top:50%;
+	left:50%;	
+	font-size:18px;
+	color: #fff;
+	transform: translate(-50%,-50%);
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .upload-footer{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	text-align: center;
+}
+.modal-uploader .modal-body .upload-footer .btn-close-modal{
+	position: relative;
+	z-index: 1;
+	margin: 0 0 15px;
+	border: none;
+	color: #fff;
+	font-size: 14px;
+	background: none;
+	text-shadow: 0px 0px 2px #000;
+}
+.modal-uploader .modal-body .upload-footer .btn-close-modal:after{
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	width: 64px;
+	height: 32px;
+	margin: -10px 0 0 -32px;
+	background: url('img/arrow.png') top left no-repeat;
+	background-size: 100% 100%;
+}
+.modal-uploader .modal-body .upload-footer p{
+	color: #fff;
+	margin: 0 0 10px;
+	font-size: 14px;
+	text-shadow: 0px 0px 2px #000;
+}
+/*********************************************************************************************/
+.modal-uploader .modal-body .error-alert{
+	position:absolute;
+	top:0;
+	left:0;
+	z-index: 100;
+	display: none;
+	width:100%;
+	height:100%;
+	background:rgba(0,0,0,0.75);
+}
+.modal-uploader .modal-body .error-alert h4{
+	position:absolute;
+	top: 50%;
+	left: 0;
+	width: 100%;
+	text-align: center;
+	color: #fff;
+	transform:translateY(-50%);
+}
