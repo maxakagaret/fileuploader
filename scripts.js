@@ -377,8 +377,6 @@ $(document).ready(function(){
 		$('.modal-uploader .modal-body .full-upload-button-box').css({'visibility':'visible'});	
 	});
 
-	//$('.modal-uploader .modal-body .file-area .image-files')
-
 	$('.modal-uploader .modal-body .file-area .image-files').bind('DOMMouseScroll mousewheel', function(e){
 		if(e.originalEvent.deltaY < 0) {
             $(this).scrollLeft($(this).scrollLeft() + 100);
